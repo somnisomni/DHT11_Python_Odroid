@@ -14,11 +14,13 @@ class DHT11Result:
     ERR_CRC = 2
 
     error_code = ERR_NO_ERROR
+    error_message = ""
     temperature = -1
     humidity = -1
 
-    def __init__(self, error_code, temperature, humidity):
+    def __init__(self, error_code, error_message, temperature, humidity):
         self.error_code = error_code
+        self.error_message = error_message
         self.temperature = temperature
         self.humidity = humidity
 
@@ -58,7 +60,8 @@ class DHT11:
 
         # if bit count mismatch, return error (4 byte data + 1 byte checksum)
         if len(pull_up_lengths) != 40:
-            return DHT11Result(DHT11Result.ERR_MISSING_DATA, 0, 0)
+            message = "missing data, expected length 40, got {}".format(len(pull_up_lengths))
+            return DHT11Result(DHT11Result.ERR_MISSING_DATA, message, -1, -1)
 
         # calculate bits from lengths of the pull up periods
         bits = self.__calculate_bits(pull_up_lengths)
@@ -69,7 +72,8 @@ class DHT11:
         # calculate checksum and check
         checksum = self.__calculate_checksum(the_bytes)
         if the_bytes[4] != checksum:
-            return DHT11Result(DHT11Result.ERR_CRC, 0, 0)
+            message = "checksum mismatch, expected {}, got {}".format(the_bytes[4], checksum)
+            return DHT11Result(DHT11Result.ERR_CRC, message, 0, 0)
 
         # ok, we have valid data
 
@@ -82,7 +86,7 @@ class DHT11:
         temperature = the_bytes[2] + float(the_bytes[3]) / 10
         humidity = the_bytes[0] + float(the_bytes[1]) / 10
 
-        return DHT11Result(DHT11Result.ERR_NO_ERROR, temperature, humidity)
+        return DHT11Result(DHT11Result.ERR_NO_ERROR, "success", temperature, humidity)
 
     def __send_and_sleep(self, output, sleep):
         wiringpi.digitalWrite(self.__pin, output)
