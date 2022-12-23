@@ -73,7 +73,7 @@ class DHT11:
         checksum = self.__calculate_checksum(the_bytes)
         if the_bytes[4] != checksum:
             message = "checksum mismatch, expected {}, got {}".format(the_bytes[4], checksum)
-            return DHT11Result(DHT11Result.ERR_CRC, message, 0, 0)
+            return DHT11Result(DHT11Result.ERR_CRC, message, -1, -1)
 
         # ok, we have valid data
 
