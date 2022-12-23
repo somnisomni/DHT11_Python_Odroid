@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="dht11-odroid",
+    name="odroid-dht11",
     version="0.1.0",
     author="somni",
     author_email="me@somni.one",
