@@ -1,8 +1,13 @@
 import time
-import RPi
+import odroid_wiringpi as wiringpi
+
+HIGH = 1
+LOW = 0
+INPUT = 0
+OUTPUT = 1
 
 class DHT11Result:
-    'DHT11 sensor result returned by DHT11.read() method'
+    "DHT11 sensor result returned by DHT11.read() method"
 
     ERR_NO_ERROR = 0
     ERR_MISSING_DATA = 1
@@ -22,7 +27,7 @@ class DHT11Result:
 
 
 class DHT11:
-    'DHT11 sensor reader class for Raspberry'
+    "DHT11 sensor reader class for ODROID SBCs"
 
     __pin = 0
 
@@ -30,16 +35,17 @@ class DHT11:
         self.__pin = pin
 
     def read(self):
-        RPi.GPIO.setup(self.__pin, RPi.GPIO.OUT)
+        # set pin mode to output
+        wiringpi.pinMode(self.__pin, OUTPUT)
 
         # send initial high
-        self.__send_and_sleep(RPi.GPIO.HIGH, 0.05)
+        self.__send_and_sleep(HIGH, 0.05)
 
         # pull down to low
-        self.__send_and_sleep(RPi.GPIO.LOW, 0.02)
+        self.__send_and_sleep(LOW, 0.02)
 
         # change to input using pull up
-        RPi.GPIO.setup(self.__pin, RPi.GPIO.IN, RPi.GPIO.PUD_UP)
+        wiringpi.pinMode(self.__pin, INPUT)
 
         # collect data into an array
         data = self.__collect_input()
@@ -76,7 +82,7 @@ class DHT11:
         return DHT11Result(DHT11Result.ERR_NO_ERROR, temperature, humidity)
 
     def __send_and_sleep(self, output, sleep):
-        RPi.GPIO.output(self.__pin, output)
+        wiringpi.digitalWrite(self.__pin, output)
         time.sleep(sleep)
 
     def __collect_input(self):
@@ -89,7 +95,7 @@ class DHT11:
         last = -1
         data = []
         while True:
-            current = RPi.GPIO.input(self.__pin)
+            current = wiringpi.digitalRead(self.__pin)
             data.append(current)
             if last != current:
                 unchanged_count = 0
@@ -114,33 +120,32 @@ class DHT11:
         current_length = 0 # will contain the length of the previous period
 
         for i in range(len(data)):
-
             current = data[i]
             current_length += 1
 
             if state == STATE_INIT_PULL_DOWN:
-                if current == RPi.GPIO.LOW:
+                if current == LOW:
                     # ok, we got the initial pull down
                     state = STATE_INIT_PULL_UP
                     continue
                 else:
                     continue
             if state == STATE_INIT_PULL_UP:
-                if current == RPi.GPIO.HIGH:
+                if current == HIGH:
                     # ok, we got the initial pull up
                     state = STATE_DATA_FIRST_PULL_DOWN
                     continue
                 else:
                     continue
             if state == STATE_DATA_FIRST_PULL_DOWN:
-                if current == RPi.GPIO.LOW:
+                if current == LOW:
                     # we have the initial pull down, the next will be the data pull up
                     state = STATE_DATA_PULL_UP
                     continue
                 else:
                     continue
             if state == STATE_DATA_PULL_UP:
-                if current == RPi.GPIO.HIGH:
+                if current == HIGH:
                     # data pulled up, the length of this pull up will determine whether it is 0 or 1
                     current_length = 0
                     state = STATE_DATA_PULL_DOWN
@@ -148,7 +153,7 @@ class DHT11:
                 else:
                     continue
             if state == STATE_DATA_PULL_DOWN:
-                if current == RPi.GPIO.LOW:
+                if current == LOW:
                     # pulled down, we store the length of the previous pull up period
                     lengths.append(current_length)
                     state = STATE_DATA_PULL_UP
