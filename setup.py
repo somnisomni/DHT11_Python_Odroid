@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/somnisomni/DHT11_Python_Odroid",
     packages=find_packages(),
-    install_requires=["RPi.GPIO"],
+    install_requires=["odroid-wiringpi"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
