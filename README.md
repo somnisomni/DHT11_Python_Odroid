@@ -11,8 +11,10 @@ Tested on ODROID N2+. Might work on other ODROID SBCs, but if there's any issue,
 
 To install, clone this repository and setup:
 
-```
-TO_BE_FILLED
+```sh
+$ git clone https://github.com/somnisomni/DHT11_Python_Odroid
+$ cd DHT11_Python_Odroid
+$ pip3 install .  # or with `sudo`
 ```
 
 # Usage
@@ -25,16 +27,14 @@ For example:
 ```python
 ### TO_BE_CHANGED
 
-import RPi.GPIO as GPIO
+import odroid_wiringpi as wiringpi
 import dht11
 
-# initialize GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.cleanup()
+# initialize WiringPi
+wiringpi.wiringPiSetup()
 
-# read data using pin 14
-instance = dht11.DHT11(pin = 14)
+# read data using pin 4
+instance = dht11.DHT11(pin = 4)
 result = instance.read()
 
 if result.is_valid():
@@ -44,7 +44,7 @@ else:
     print("Error: %d" % result.error_code)
 ```
 
-For working example, see `dht11_example.py` (you probably need to adjust pin for your configuration)
+For working example, see `example.py` (you probably need to adjust pin for your configuration)
 
 # License
 
