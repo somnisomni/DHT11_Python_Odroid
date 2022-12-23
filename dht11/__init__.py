@@ -79,6 +79,9 @@ class DHT11:
         temperature = the_bytes[2] + float(the_bytes[3]) / 10
         humidity = the_bytes[0] + float(the_bytes[1]) / 10
 
+        # workaround: reset pin mode to OUTPUT
+        wiringpi.pinMode(self.__pin, OUTPUT)
+
         return DHT11Result(DHT11Result.ERR_NO_ERROR, temperature, humidity)
 
     def __send_and_sleep(self, output, sleep):
