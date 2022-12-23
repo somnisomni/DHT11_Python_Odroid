@@ -1,13 +1,18 @@
 # DHT11 Python library
 
-This simple class can be used for reading temperature and humidity values from DHT11 sensor on Raspberry Pi.
+This simple class can be used for reading temperature and humidity values from DHT11 sensor on ODROID SBCs.
+
+Based on [szazo/DHT11_Python](szazo/DHT11_Python), and referenced from [unims77/odroid_c1_dht11](https://github.com/unims77/odroid_c1_dht11).
+
+Tested on ODROID N2+. Might work on other ODROID SBCs, but if there's any issue, please report it!
+
 
 # Installation
 
-To install, just run following:
+To install, clone this repository and setup:
 
 ```
-pip install dht11
+TO_BE_FILLED
 ```
 
 # Usage
@@ -18,6 +23,8 @@ pip install dht11
 For example:
 
 ```python
+### TO_BE_CHANGED
+
 import RPi.GPIO as GPIO
 import dht11
 
