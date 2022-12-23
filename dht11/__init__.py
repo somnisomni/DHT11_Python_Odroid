@@ -53,6 +53,9 @@ class DHT11:
         # parse lengths of all data pull up periods
         pull_up_lengths = self.__parse_data_pull_up_lengths(data)
 
+        # data read failure workaround: reset pin mode to OUTPUT
+        wiringpi.pinMode(self.__pin, OUTPUT)
+
         # if bit count mismatch, return error (4 byte data + 1 byte checksum)
         if len(pull_up_lengths) != 40:
             return DHT11Result(DHT11Result.ERR_MISSING_DATA, 0, 0)
@@ -78,9 +81,6 @@ class DHT11:
 
         temperature = the_bytes[2] + float(the_bytes[3]) / 10
         humidity = the_bytes[0] + float(the_bytes[1]) / 10
-
-        # workaround: reset pin mode to OUTPUT
-        wiringpi.pinMode(self.__pin, OUTPUT)
 
         return DHT11Result(DHT11Result.ERR_NO_ERROR, temperature, humidity)
 
