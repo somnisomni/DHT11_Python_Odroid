@@ -25,8 +25,6 @@ $ pip3 install .  # or with `sudo`
 For example:
 
 ```python
-### TO_BE_CHANGED
-
 import odroid_wiringpi as wiringpi
 import dht11
 

@@ -1,5 +1,3 @@
-### TO_BE_CHANGED
-
 import odroid_wiringpi as wiringpi
 import dht11
 import time
